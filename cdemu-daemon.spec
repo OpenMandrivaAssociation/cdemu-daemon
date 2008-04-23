@@ -29,6 +29,7 @@ BuildRoot:	%{_tmppath}/%{name}-root
 BuildRequires:	mirage-devel
 BuildRequires:	glib2-devel
 BuildRequires:	dbus-devel
+BuildRequires:	dbus-glib-devel
 BuildRequires:	daemon-devel
 BuildRequires:	libalsa-devel
 Obsoletes:	dkms-cdemu < 0.9
