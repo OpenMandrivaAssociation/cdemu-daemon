@@ -33,6 +33,8 @@ BuildRequires:	daemon-devel
 BuildRequires:	libalsa-devel
 Obsoletes:	dkms-cdemu < 0.9
 Requires:	kmod(vhba)
+# No actual conflict, but kcdemu works only with old cdemu:
+Conflicts:	kcdemu < 0.4.0-5
 
 %description
 The daemon receives SCSI commands from kernel module and processes
