@@ -1,7 +1,7 @@
 
 %define version 1.0.0
 %define snapshot 292
-%define rel	1
+%define rel	2
 
 %if 0
 # Update commands:
