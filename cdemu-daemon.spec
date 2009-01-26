@@ -1,7 +1,7 @@
 
-%define version 1.0.0
-%define snapshot 292
-%define rel	2
+%define version 1.1.0
+%define snapshot 0
+%define rel	1
 
 %if 0
 # Update commands:
@@ -22,6 +22,8 @@ Source:		http://downloads.sourceforge.net/cdemu/%name-%version.tar.bz2
 %endif
 Source1:	cdemud.init
 Source2:	cdemud.sysconfig
+Patch0:		cdemu-daemon-1.1.0-fix1.diff
+Patch1:		cdemu-daemon-1.1.0-mdv-format-security.patch
 Group:		Emulators
 License:	GPLv2+
 URL:		http://cdemu.sourceforge.net/
@@ -57,6 +59,8 @@ different languages.
 %else
 %setup -q
 %endif
+%patch0 -p2
+%patch1 -p1
 
 %build
 %if %snapshot
