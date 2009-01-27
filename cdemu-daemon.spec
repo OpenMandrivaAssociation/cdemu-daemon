@@ -34,6 +34,7 @@ BuildRequires:	dbus-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	daemon-devel
 BuildRequires:	libalsa-devel
+BuildRequires:	libao-devel
 Obsoletes:	dkms-cdemu < 0.9
 Requires:	rpm-helper
 Requires:	kmod(vhba)
