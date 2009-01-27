@@ -35,7 +35,7 @@ BuildRequires:	dbus-glib-devel
 BuildRequires:	daemon-devel
 BuildRequires:	libalsa-devel
 Obsoletes:	dkms-cdemu < 0.9
-PreReq:		rpm-helper
+Requires:	rpm-helper
 Requires:	kmod(vhba)
 # No actual conflict, but kcdemu works only with old cdemu:
 Conflicts:	kcdemu < 0.4.0-5
