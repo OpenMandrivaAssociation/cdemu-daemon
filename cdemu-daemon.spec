@@ -1,39 +1,23 @@
 
-%define version 1.1.0
-%define snapshot 0
-%define rel	2
-
-%if 0
-# Update commands:
-REV=$(svn info https://cdemu.svn.sourceforge.net/svnroot/cdemu/trunk/cdemu-daemon | sed -ne 's/^Last Changed Rev: //p')
-svn export -r $REV https://cdemu.svn.sourceforge.net/svnroot/cdemu/trunk/cdemu-daemon cdemu-daemon-$REV
-tar -cjf cdemu-daemon-$REV.tar.bz2 cdemu-daemon-$REV
-%endif
+%define version 1.2.0
+%define rel	1
 
 Name:		cdemu-daemon
 Version:	%version
 Summary:	Userspace daemon part of the userspace-cdemu suite
-%if %snapshot
-Release:	%mkrel 1.svn%snapshot.%rel
-Source:		%name-%snapshot.tar.bz2
-%else
 Release:	%mkrel %rel
 Source:		http://downloads.sourceforge.net/cdemu/%name-%version.tar.bz2
-%endif
 Source1:	cdemud.init
 Source2:	cdemud.sysconfig
-Patch0:		cdemu-daemon-1.1.0-fix1.diff
-Patch1:		cdemu-daemon-1.1.0-mdv-format-security.patch
+Patch1:		cdemu-daemon-1.2.0-mdv-format-security.patch
 Group:		Emulators
 License:	GPLv2+
 URL:		http://cdemu.sourceforge.net/
 BuildRoot:	%{_tmppath}/%{name}-root
-BuildRequires:	mirage-devel
+BuildRequires:	mirage-devel >= %version
 BuildRequires:	glib2-devel
-BuildRequires:	dbus-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	daemon-devel
-BuildRequires:	libalsa-devel
 BuildRequires:	libao-devel
 BuildRequires:	libsysfs-devel
 Obsoletes:	dkms-cdemu < 0.9
@@ -57,18 +41,10 @@ controlled over D-BUS, it allows for different clients written in
 different languages.
 
 %prep
-%if %snapshot
-%setup -q -n %name-%snapshot
-%else
 %setup -q
-%endif
-%patch0 -p2
 %patch1 -p1
 
 %build
-%if %snapshot
-./autogen.sh
-%endif
 %configure2_5x
 %make
 
