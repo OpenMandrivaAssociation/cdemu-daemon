@@ -1,13 +1,13 @@
 
-%define version 1.2.0
-%define rel	2
+%define version 1.3.0
+%define rel	1
 
 Name:		cdemu-daemon
 Version:	%version
-Summary:	Userspace daemon part of the userspace-cdemu suite
+Summary:	Userspace daemon part of the CDemu suite
 Release:	%mkrel %rel
-Source:		http://downloads.sourceforge.net/cdemu/%name-%version.tar.bz2
-Source1:	cdemud.init
+Source:		http://downloads.sourceforge.net/cdemu/%name-%version.tar.gz
+Source1:	cdemud-dbus-service
 Source2:	cdemud.sysconfig
 Patch1:		cdemu-daemon-1.2.0-mdv-format-security.patch
 Group:		Emulators
@@ -23,7 +23,7 @@ BuildRequires:	libsysfs-devel
 Obsoletes:	dkms-cdemu < 0.9
 Requires:	rpm-helper
 Requires:	kmod(vhba)
-# No actual conflict, but kcdemu works only with old cdemu:
+# kcdemu works only with old cdemu:
 Conflicts:	kcdemu < 0.4.0-5
 
 %description
@@ -52,26 +52,49 @@ different languages.
 rm -rf %buildroot
 %makeinstall_std
 
-install -d -m755 %{buildroot}%{_initrddir}
+install -d -m755 %{buildroot}%{_libdir}
 install -d -m755 %{buildroot}%{_sysconfdir}/sysconfig
+install -d -m755 %{buildroot}%{_sysconfdir}/modprobe.preload.d
+install -d -m755 %{buildroot}%{_datadir}/dbus-1/services
+install -d -m755 %{buildroot}/lib/udev/rules.d
 
-install -m755 %SOURCE1 %{buildroot}%{_initrddir}/cdemud
+install -m755 %SOURCE1 %{buildroot}%{_libdir}/cdemud-dbus-service
 install -m644 %SOURCE2 %{buildroot}%{_sysconfdir}/sysconfig/cdemud
+
+echo "vhba" > %{buildroot}%{_sysconfdir}/modprobe.preload.d/cdemud
+
+cat > %{buildroot}%{_datadir}/dbus-1/services/net.sf.cdemu.CDEMUD_Daemon.service <<EOF
+[D-BUS Service]
+Name=net.sf.cdemu.CDEMUD_Daemon
+Exec=%{_libdir}/cdemud-dbus-service
+EOF
+
+# TODO: handle this in udev; udev-acl tag is private
+cat > %{buildroot}/lib/udev/rules.d/50-cdemud.rules <<EOF
+KERNEL=="vhba_ctl", ACTION=="add|change", TAG+="udev-acl"
+EOF
 
 %clean
 rm -rf %{buildroot}
 
 %post
-%_post_service cdemud
-
-%preun
-%_preun_service cdemud
+# remove old system-wide service
+if [ -e %{_initrddir}/cdemud ]; then
+	chkconfig --del cdemud
+fi
+# apply new udev rule if module already present
+/sbin/modprobe --first-time vhba 2>/dev/null || /sbin/udevadm trigger --sysname-match=vhba_ctl
 
 %files
 %defattr(-,root,root)
 %doc README AUTHORS
 %config(noreplace) %{_sysconfdir}/sysconfig/cdemud
+# not normally used, but provided in case the user wants to run cdemud
+# manually on system bus:
 %config %{_sysconfdir}/dbus-1/system.d/cdemud-dbus.conf
-%{_initrddir}/cdemud
+%{_sysconfdir}/modprobe.preload.d/cdemud
+/lib/udev/rules.d/50-cdemud.rules
 %{_bindir}/cdemud
+%{_libdir}/cdemud-dbus-service
+%{_datadir}/dbus-1/services/net.sf.cdemu.CDEMUD_Daemon.service
 %{_mandir}/man8/cdemud.8*
