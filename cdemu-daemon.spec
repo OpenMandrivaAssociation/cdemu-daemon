@@ -1,6 +1,6 @@
 
 %define version 1.4.0
-%define rel	1
+%define rel	2
 
 Name:		cdemu-daemon
 Version:	%version
