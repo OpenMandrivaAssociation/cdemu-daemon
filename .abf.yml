@@ -1,0 +1,4 @@
+sources:
+  "cdemu-daemon-1.5.0.tar.bz2:"	26a4bae051bc6c75f36b47bc663f9aed2467e1b7
+  "cdemud-dbus-service:"	31eaded432c63a9a8a7745d9b38da2bf7168e877
+  "cdemud.sysconfig:"	565cac8d383211f4c450ee4b0a81781c0fa8c4b7
