@@ -1,0 +1,16 @@
+
+# CDEmu daemon configuration
+
+# To change a value, uncomment it first.
+
+# number of devices
+# NUM_DEVICES=
+
+# audio backend (to enable audio, set to "alsa")
+# AUDIO=
+
+# use a different audio device
+# AUDIO_DEVICE=
+
+# additional options
+# OPTIONS=

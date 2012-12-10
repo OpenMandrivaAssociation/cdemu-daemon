@@ -17,7 +17,7 @@ BuildRequires:	glib2-devel
 BuildRequires:	dbus-glib-devel
 BuildRequires:	daemon-devel
 BuildRequires:	libao-devel
-BuildRequires:	libsysfs-devel
+BuildRequires:	sysfsutils-devel
 Obsoletes:	dkms-cdemu < 0.9
 Requires:	rpm-helper
 Requires:	kmod(vhba)
@@ -95,3 +95,50 @@ fi
 %{_datadir}/dbus-1/system-services/net.sf.cdemu.CDEMUD_Daemon.service
 %{_datadir}/dbus-1/services/net.sf.cdemu.CDEMUD_Daemon.service
 %{_mandir}/man8/cdemud.8*
+
+
+%changelog
+* Mon Feb 27 2012 Dmitry Mikhirev <dmikhirev@mandriva.org> 1.5.0-1mdv2012.0
++ Revision: 781105
+- update to 1.5.0
+
+* Tue Feb 21 2012 Jon Dill <dillj@mandriva.org> 1.4.0-2
++ Revision: 778765
+- rebuild against new version of libffi4
+
+* Wed Nov 23 2011 Alexander Khrukin <akhrukin@mandriva.org> 1.4.0-1
++ Revision: 732867
+- version update to 1.4.0
+
+* Sat Sep 04 2010 Anssi Hannula <anssi@mandriva.org> 1.3.0-1mdv2011.0
++ Revision: 575768
+- new version
+- replace initscript with a dbus service which starts a user-specific
+  cdemud when its services are needed
+
+* Sun Mar 28 2010 Funda Wang <fwang@mandriva.org> 1.2.0-2mdv2010.1
++ Revision: 528378
+- rebuild
+
+* Thu Dec 03 2009 Funda Wang <fwang@mandriva.org> 1.2.0-1mdv2010.1
++ Revision: 472918
+- new version 1.2.0
+
+* Thu Sep 10 2009 Thierry Vignaud <tv@mandriva.org> 1.1.0-2mdv2010.0
++ Revision: 436973
+- rebuild
+
+* Tue Jan 27 2009 Guillaume Bedot <littletux@mandriva.org> 1.1.0-1mdv2009.1
++ Revision: 334137
+- Fix buildrequires
+- require rpm-helper, chkconfig line
+- Release 1.1.0
+
+* Sat Apr 26 2008 Anssi Hannula <anssi@mandriva.org> 1.0.0-1.svn292.2mdv2009.0
++ Revision: 197782
+- fix infinite recursion in initscript
+
+* Wed Apr 23 2008 Anssi Hannula <anssi@mandriva.org> 1.0.0-1.svn292.1mdv2009.0
++ Revision: 197015
+- initial Mandriva release
+
