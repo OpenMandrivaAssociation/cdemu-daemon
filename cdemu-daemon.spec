@@ -1,7 +1,7 @@
 Summary:	Userspace daemon part of the CDemu suite
 Name:		cdemu-daemon
 Version:	2.1.1
-Release:	1
+Release:	2
 Group:		Emulators
 License:	GPLv2+
 Url:		http://cdemu.sourceforge.net/
@@ -66,5 +66,6 @@ echo "vhba" > %{buildroot}%{_sysconfdir}/modprobe.preload.d/cdemud.conf
 
 install %{SOURCE1} %{buildroot}/lib/udev/rules.d/50-cdemud.rules
 
+%if "%{_prefix}/libexec" != "%{_libexecdir}"
 mv %{buildroot}%{_prefix}/libexec/cdemu-daemon-session.sh %{buildroot}%{_libexecdir}/cdemu-daemon-session.sh
-
+%endif
