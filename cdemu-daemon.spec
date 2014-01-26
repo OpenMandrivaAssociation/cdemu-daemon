@@ -1,28 +1,22 @@
-%define version 1.5.0
-%define rel	1
-
-Name:		cdemu-daemon
-Version:	%version
 Summary:	Userspace daemon part of the CDemu suite
-Release:	%mkrel %rel
-Source0:	http://downloads.sourceforge.net/project/%{name}/%{name}-%{version}.tar.bz2
-Source1:	cdemud-dbus-service
-Source2:	cdemud.sysconfig
-Patch1:		cdemu-daemon-1.2.0-mdv-format-security.patch
+Name:		cdemu-daemon
+Version:	2.1.1
+Release:	1
 Group:		Emulators
 License:	GPLv2+
-URL:		http://cdemu.sourceforge.net/
-BuildRequires:	mirage-devel >= %version
-BuildRequires:	glib2-devel
-BuildRequires:	dbus-glib-devel
-BuildRequires:	daemon-devel
-BuildRequires:	libao-devel
+Url:		http://cdemu.sourceforge.net/
+Source0:	http://downloads.sourceforge.net/cdemu/%{name}-%{version}.tar.bz2
+Source1:	50-cdemud.rules
+# (Anssi 12/2011) change default configuration to
+# - no logging into $HOME to reduce homedir pollution
+Patch0:		0001-daemon-set-Mageia-default-configuration.patch
+BuildRequires:	cmake
 BuildRequires:	sysfsutils-devel
-Obsoletes:	dkms-cdemu < 0.9
-Requires:	rpm-helper
+BuildRequires:	pkgconfig(libmirage) >= %{version}
+BuildRequires:	pkgconfig(glib-2.0)
+BuildRequires:	pkgconfig(dbus-glib-1)
+BuildRequires:	pkgconfig(ao)
 Requires:	kmod(vhba)
-# kcdemu works only with old cdemu:
-Conflicts:	kcdemu < 0.4.0-5
 
 %description
 The daemon receives SCSI commands from kernel module and processes
@@ -38,107 +32,39 @@ is written in C and based on GLib (and thus GObjects), but being
 controlled over D-BUS, it allows for different clients written in
 different languages.
 
+%files
+%doc README AUTHORS
+%{_sysconfdir}/modprobe.preload.d/cdemud.conf
+/lib/udev/rules.d/50-cdemud.rules
+%{_bindir}/cdemu-daemon
+%{_libexecdir}/cdemu-daemon-session.sh
+%{_datadir}/dbus-1/services/net.sf.cdemu.CDEmuDaemon.service
+%{_mandir}/man8/cdemu-daemon.8*
+
+%post
+# apply the new udev rule if module already present
+/sbin/modprobe --first-time vhba 2>/dev/null || /sbin/udevadm trigger --sysname-match=vhba_ctl
+
+#----------------------------------------------------------------------------
+
 %prep
 %setup -q
-#patch1 -p1
+%apply_patches
 
 %build
-%configure2_5x
+%cmake
 %make
 
 %install
-%makeinstall_std
+%makeinstall_std -C build
 
-install -d -m755 %{buildroot}%{_libdir}
-install -d -m755 %{buildroot}%{_sysconfdir}/sysconfig
+install -d -m755 %{buildroot}%{_libexecdir}
 install -d -m755 %{buildroot}%{_sysconfdir}/modprobe.preload.d
-install -d -m755 %{buildroot}%{_datadir}/dbus-1/services
 install -d -m755 %{buildroot}/lib/udev/rules.d
 
-install -m755 %SOURCE1 %{buildroot}%{_libdir}/cdemud-dbus-service
-install -m644 %SOURCE2 %{buildroot}%{_sysconfdir}/sysconfig/cdemud
+echo "vhba" > %{buildroot}%{_sysconfdir}/modprobe.preload.d/cdemud.conf
 
-echo "vhba" > %{buildroot}%{_sysconfdir}/modprobe.preload.d/cdemud
+install %{SOURCE1} %{buildroot}/lib/udev/rules.d/50-cdemud.rules
 
-cat > %{buildroot}%{_datadir}/dbus-1/services/net.sf.cdemu.CDEMUD_Daemon.service <<EOF
-[D-BUS Service]
-Name=net.sf.cdemu.CDEMUD_Daemon
-Exec=%{_libdir}/cdemud-dbus-service
-EOF
-
-# TODO: handle this in udev; udev-acl tag is private
-cat > %{buildroot}/lib/udev/rules.d/50-cdemud.rules <<EOF
-KERNEL=="vhba_ctl", ACTION=="add|change", TAG+="udev-acl"
-EOF
-
-%post
-# remove old system-wide service
-if [ -e %{_initrddir}/cdemud ]; then
-	chkconfig --del cdemud
-fi
-# apply new udev rule if module already present
-/sbin/modprobe --first-time vhba 2>/dev/null || /sbin/udevadm trigger --sysname-match=vhba_ctl
-
-%files
-%defattr(-,root,root)
-%doc README AUTHORS
-%config(noreplace) %{_sysconfdir}/sysconfig/cdemud
-# not normally used, but provided in case the user wants to run cdemud
-# manually on system bus:
-%config %{_sysconfdir}/dbus-1/system.d/cdemud-dbus.conf
-%{_sysconfdir}/modprobe.preload.d/cdemud
-/lib/udev/rules.d/50-cdemud.rules
-%{_bindir}/cdemud
-%{_libdir}/cdemu-daemon-session.sh
-%{_libdir}/cdemu-daemon-system.sh
-%{_libdir}/cdemud-dbus-service
-%{_datadir}/dbus-1/system-services/net.sf.cdemu.CDEMUD_Daemon.service
-%{_datadir}/dbus-1/services/net.sf.cdemu.CDEMUD_Daemon.service
-%{_mandir}/man8/cdemud.8*
-
-
-%changelog
-* Mon Feb 27 2012 Dmitry Mikhirev <dmikhirev@mandriva.org> 1.5.0-1mdv2012.0
-+ Revision: 781105
-- update to 1.5.0
-
-* Tue Feb 21 2012 Jon Dill <dillj@mandriva.org> 1.4.0-2
-+ Revision: 778765
-- rebuild against new version of libffi4
-
-* Wed Nov 23 2011 Alexander Khrukin <akhrukin@mandriva.org> 1.4.0-1
-+ Revision: 732867
-- version update to 1.4.0
-
-* Sat Sep 04 2010 Anssi Hannula <anssi@mandriva.org> 1.3.0-1mdv2011.0
-+ Revision: 575768
-- new version
-- replace initscript with a dbus service which starts a user-specific
-  cdemud when its services are needed
-
-* Sun Mar 28 2010 Funda Wang <fwang@mandriva.org> 1.2.0-2mdv2010.1
-+ Revision: 528378
-- rebuild
-
-* Thu Dec 03 2009 Funda Wang <fwang@mandriva.org> 1.2.0-1mdv2010.1
-+ Revision: 472918
-- new version 1.2.0
-
-* Thu Sep 10 2009 Thierry Vignaud <tv@mandriva.org> 1.1.0-2mdv2010.0
-+ Revision: 436973
-- rebuild
-
-* Tue Jan 27 2009 Guillaume Bedot <littletux@mandriva.org> 1.1.0-1mdv2009.1
-+ Revision: 334137
-- Fix buildrequires
-- require rpm-helper, chkconfig line
-- Release 1.1.0
-
-* Sat Apr 26 2008 Anssi Hannula <anssi@mandriva.org> 1.0.0-1.svn292.2mdv2009.0
-+ Revision: 197782
-- fix infinite recursion in initscript
-
-* Wed Apr 23 2008 Anssi Hannula <anssi@mandriva.org> 1.0.0-1.svn292.1mdv2009.0
-+ Revision: 197015
-- initial Mandriva release
+mv %{buildroot}%{_prefix}/libexec/cdemu-daemon-session.sh %{buildroot}%{_libexecdir}/cdemu-daemon-session.sh
 
