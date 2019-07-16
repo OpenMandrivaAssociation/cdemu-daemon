@@ -1,7 +1,7 @@
 Summary:	Userspace daemon part of the CDemu suite
 Name:		cdemu-daemon
-Version:	2.1.1
-Release:	4
+Version:	3.2.2
+Release:	1
 Group:		Emulators
 License:	GPLv2+
 Url:		http://cdemu.sourceforge.net/
@@ -53,10 +53,10 @@ different languages.
 
 %build
 %cmake
-%make
+%make_build
 
 %install
-%makeinstall_std -C build
+%make_install -C build
 
 install -d -m755 %{buildroot}%{_libexecdir}
 install -d -m755 %{buildroot}%{_sysconfdir}/modprobe.preload.d
