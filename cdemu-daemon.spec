@@ -1,7 +1,7 @@
 Summary:	Userspace daemon part of the CDemu suite
 Name:		cdemu-daemon
 Version:	3.2.2
-Release:	1
+Release:	2
 Group:		Emulators
 License:	GPLv2+
 Url:		http://cdemu.sourceforge.net/
@@ -17,7 +17,7 @@ BuildRequires:	pkgconfig(glib-2.0)
 BuildRequires:	pkgconfig(dbus-glib-1)
 BuildRequires:	pkgconfig(ao)
 BuildRequires:	intltool
-Requires:	kmod(vhba)
+Requires:	dkms-vhba
 
 %description
 The daemon receives SCSI commands from kernel module and processes
