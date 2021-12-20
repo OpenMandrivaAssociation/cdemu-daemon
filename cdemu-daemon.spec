@@ -1,15 +1,13 @@
 Summary:	Userspace daemon part of the CDemu suite
 Name:		cdemu-daemon
-Version:	3.2.4
+Version:	3.2.6
 Release:	1
 Group:		Emulators
 License:	GPLv2+
 Url:		http://cdemu.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/cdemu/%{name}-%{version}.tar.bz2
+Source0:	http://downloads.sourceforge.net/cdemu/%{name}-%{version}.tar.xz
 Source1:	50-cdemud.rules
-# (Anssi 12/2011) change default configuration to
-# - no logging into $HOME to reduce homedir pollution
-Patch0:		0001-daemon-set-Mageia-default-configuration.patch
+
 BuildRequires:	cmake
 BuildRequires:	sysfsutils-devel
 BuildRequires:	pkgconfig(libmirage) >= 3.2.1
@@ -38,15 +36,15 @@ different languages.
 %{_sysconfdir}/modprobe.preload.d/cdemud.conf
 /lib/udev/rules.d/50-cdemud.rules
 %{_bindir}/cdemu-daemon
-%{_libexecdir}/cdemu-daemon-session.sh
-%{_datadir}/dbus-1/services/net.sf.cdemu.CDEmuDaemon.service
+#{_libexecdir}/cdemu-daemon-session.sh
+#{_datadir}/dbus-1/services/net.sf.cdemu.CDEmuDaemon.service
 %{_datadir}/locale/*/LC_MESSAGES/cdemu-daemon.mo
 %{_mandir}/man8/cdemu-daemon.8*
 
 #----------------------------------------------------------------------------
 
 %prep
-%setup -q
+%autosetup -p1
 %build
 %cmake
 %make_build
