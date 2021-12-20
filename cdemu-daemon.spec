@@ -36,8 +36,8 @@ different languages.
 %{_sysconfdir}/modprobe.preload.d/cdemud.conf
 /lib/udev/rules.d/50-cdemud.rules
 %{_bindir}/cdemu-daemon
-%{_libexecdir}/cdemu-daemon-session.sh
-%{_datadir}/dbus-1/services/net.sf.cdemu.CDEmuDaemon.service
+#{_libexecdir}/cdemu-daemon-session.sh
+#{_datadir}/dbus-1/services/net.sf.cdemu.CDEmuDaemon.service
 %{_datadir}/locale/*/LC_MESSAGES/cdemu-daemon.mo
 %{_mandir}/man8/cdemu-daemon.8*
 
