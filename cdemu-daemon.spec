@@ -5,7 +5,7 @@ Release:	1
 Group:		Emulators
 License:	GPLv2+
 Url:		http://cdemu.sourceforge.net/
-Source0:	http://downloads.sourceforge.net/cdemu/%{name}-%{version}.tar.bz2
+Source0:	http://downloads.sourceforge.net/cdemu/%{name}-%{version}.tar.xz
 Source1:	50-cdemud.rules
 
 BuildRequires:	cmake
