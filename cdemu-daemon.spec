@@ -1,6 +1,6 @@
 Summary:	Userspace daemon part of the CDemu suite
 Name:		cdemu-daemon
-Version:	3.2.7
+Version:	3.3.1
 Release:	1
 Group:		Emulators
 License:	GPLv2+
